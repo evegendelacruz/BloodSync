@@ -1,0 +1,392 @@
+<!-- templates/accounts/registration.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - BloodSync{% endblock %}
+
+{% block content %}
+<style>
+    body {
+      background: url('{% static "img/Background.png" %}') no-repeat center center
+        fixed;
+      background-size: cover;
+      min-height: 150vh;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .header {
+      background-color: #084d23;
+      padding: 5px 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      border-bottom: 4px solid #8dc63f;
+    }
+  
+    .bloodsync-text {
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+    }
+  
+    .bloodsync-yellow {
+      color: #ffcf35;
+    }
+  
+    .centralized-text {
+      color: #ffcf35;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+  
+    .login-form-container {
+      margin-top: 100px;
+      min-height: calc(100vh - 150px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .login-form {
+      background-color: rgba(8, 77, 35, 0.85);
+      border-radius: 0;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      color: white;
+      width: 400px;
+    }
+  
+    .form-control {
+      height: 40px;
+      border-radius: 3px;
+    }
+  
+    .btn-login {
+      background-color: #8dc63f;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 3px;
+      font-weight: bold;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+  
+    .btn-login:hover {
+      background-color: #7ab62f;
+    }
+  
+    .footer {
+      background-color: #ffcf35;
+      padding: 10px 20px;
+      color: #333;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: left;
+      font-size: 12px;
+    }
+  
+    .form-label {
+      margin-bottom: 5px;
+    }
+  
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+  
+    .logo-text {
+      margin-left: 10px;
+    }
+  
+    .doh-header {
+      display: flex;
+      align-items: right;
+      padding: 2px 10px;
+      border-radius: 5px;
+      margin-right: 5px;
+    }
+  
+    .doh-text {
+      margin-left: 5px;
+      line-height: 1.2;
+    }
+  
+    .doh-title {
+      color: #084d23;
+      font-weight: bold;
+      font-size: 14px;
+      margin: 0;
+    }
+  
+    .doh-subtitle {
+      color: #084d23;
+      font-size: 10px;
+      margin: 0;
+    }
+  
+    .text-header {
+      display: flex;
+      padding: 2px 10px;
+      border-radius: 5px;
+    }
+
+    /* Added styles for notification */
+    .notification {
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    .success {
+      background-color: rgba(141, 198, 63, 0.2);
+      border: 1px solid #8dc63f;
+      color: #ffffff;
+    }
+    
+    .error {
+      background-color: rgba(220, 53, 69, 0.2);
+      border: 1px solid #dc3545;
+      color: #ffffff;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+  
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="{% static 'img/Logo.png' %}"
+        alt="BloodSync Logo"
+        style="height: 50px"
+      />
+    </div>
+    <div class="doh-header">
+      <img
+        src="{% static 'img/DOH Logo.png' %}"
+        alt="DOH Logo"
+        style="height: 50px; margin-top: 5px"
+      />
+      <img
+        src="{% static 'img/Text Logo.png' %}"
+        alt="Text Logo"
+        style="height: 60px"
+      />
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="container login-form-container">
+    <div class="login-form">
+      <h4 class="text-left mb-3">Create an Account</h4>
+      <p class="text-left mb-4">
+        Have an Account? <a href="{% url 'login' %}" class="text-warning">Click Here</a>
+      </p>
+      
+      <!-- Notification message -->
+      <div id="notificationArea" class="notification success">
+        <span id="notificationMessage"></span>
+      </div>
+                                
+      <form method="post" id="registrationForm">
+          {% csrf_token %}
+          <div class="mb-3">
+              <label for="id_full_name" class="form-label text-white">Full Name</label>
+              <input type="text" name="full_name" id="id_full_name" class="form-control" required>
+          </div>
+          
+          <div class="mb-3">
+              <label for="id_barangay" class="form-label text-white">Barangay</label>
+              <input type="text" name="barangay" id="id_barangay" class="form-control" required>
+          </div>
+          
+          <div class="mb-3">
+              <label for="id_role" class="form-label text-white">Role</label>
+              <select name="role" id="id_role" class="form-control" required>
+                  <option value="">Select Role</option>
+                  <option value="barangay_official">Barangay Official</option>
+                  <option value="admin">Administrator</option>
+              </select>
+          </div>
+          
+          <div class="mb-3">
+              <label for="id_email" class="form-label text-white">Email</label>
+              <input type="email" name="email" id="id_email" class="form-control" required>
+          </div>
+          
+          <div class="mb-3">
+              <label for="id_password1" class="form-label text-white">Password</label>
+              <div class="input-group">
+                  <input type="password" name="password1" id="id_password1" class="form-control" required>
+                  <span class="input-group-text bg-white" onclick="togglePassword('id_password1')">
+                      <i id="icon_password1" class="fas fa-eye"></i>
+                  </span>
+              </div>
+          </div>
+          
+          <div class="mb-3">
+              <label for="id_password2" class="form-label text-white">Confirm Password</label>
+              <div class="input-group">
+                  <input type="password" name="password2" id="id_password2" class="form-control" required>
+                  <span class="input-group-text bg-white" onclick="togglePassword('id_password2')">
+                      <i id="icon_password2" class="fas fa-eye"></i>
+                  </span>
+              </div>
+          </div>
+          
+          <div class="d-grid">
+              <button type="submit" id="registerButton" class="btn btn-login w-100">REGISTER</button>
+          </div>
+      </form>
+    </div>
+  </div>
+                
+  <!-- Footer -->
+  <div class="footer">2025 © Copyright Code Red Corporation ver. 1.0</div>
+
+  <script>
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+      const passwordField = document.getElementById(fieldId);
+      const iconElement = document.getElementById('icon_' + fieldId);
+      
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+        iconElement.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        passwordField.type = "password";
+        iconElement.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    }
+
+    // Handle form submission with loading state and email notification
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+      const roleSelect = document.getElementById('id_role');
+      const registerButton = document.getElementById('registerButton');
+      const notificationArea = document.getElementById('notificationArea');
+      const notificationMessage = document.getElementById('notificationMessage');
+      
+      // Only for barangay_official role, we'll show loading and notification
+      if (roleSelect.value === 'barangay_official') {
+        event.preventDefault();
+        
+        // Show loading state
+        registerButton.innerHTML = '<span class="spinner"></span> PROCESSING...';
+        registerButton.disabled = true;
+        
+        // Get form data for email
+        const fullName = document.getElementById('id_full_name').value;
+        const barangay = document.getElementById('id_barangay').value;
+        const email = document.getElementById('id_email').value;
+        
+        // Create FormData object
+        const formData = new FormData(this);
+        
+        // Add flag to indicate this is a barangay official registration that needs admin approval
+        formData.append('needs_approval', 'true');
+        
+        // Submit the form via AJAX
+        fetch(this.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Registration failed');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Display success message
+          notificationArea.style.display = 'block';
+          notificationArea.className = 'notification success';
+          notificationMessage.textContent = 'Registration submitted. An admin will review your application and contact you via email.';
+          
+          // Send email notification to admin
+          sendAdminNotification(fullName, barangay, email);
+          
+          // Reset form after successful submission
+          document.getElementById('registrationForm').reset();
+          
+          // Reset button after 3 seconds
+          setTimeout(() => {
+            registerButton.innerHTML = 'REGISTER';
+            registerButton.disabled = false;
+          }, 3000);
+        })
+        .catch(error => {
+          console.error('Registration error:', error);
+          notificationArea.style.display = 'block';
+          notificationArea.className = 'notification error';
+          notificationMessage.textContent = 'There was an error processing your registration. Please try again.';
+          
+          registerButton.innerHTML = 'REGISTER';
+          registerButton.disabled = false;
+        });
+      }
+    });
+    
+    // Function to send email notification to admin
+    function sendAdminNotification(fullName, barangay, email) {
+      // Prepare data for the email notification
+      const emailData = {
+        subject: 'New Barangay Official Registration Requires Approval',
+        from_email: 'bloodsync.doh@gmail.com',
+        to_email: 'bloodsync.doh@gmail.com', // Admin email address
+        message: `
+          A new Barangay Official has registered and requires approval:
+          
+          Full Name: ${fullName}
+          Barangay: ${barangay}
+          Email: ${email}
+          
+          Please review this registration request in the admin dashboard.
+        `
+      };
+      
+      // Send email notification to admin
+      fetch('/api/send-admin-notification/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(emailData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.error('Admin notification failed to send');
+        }
+      })
+      .catch(error => {
+        console.error('Error sending admin notification:', error);
+      });
+    }
+  </script>
+{% endblock %}

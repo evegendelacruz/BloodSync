@@ -1,0 +1,130 @@
+<!-- templates/blood_inventory/admin_dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - BloodSync{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <div class="d-flex align-items-center p-3">
+                <img src="{% static 'img/Logo.png' %}" alt="BloodSync Logo" class="img-fluid" style="height: 50px; margin-top: -10px;">
+            </div>
+            
+            <div class="mt-4">
+                <div class="sidebar-item active">
+                    <a href="{% url 'admin_dashboard' %}">
+                        <i class="fas fa-vial me-2"></i> Blood Stock
+                    </a>
+                </div>
+                <div class="sidebar-item">
+                    <a href="{% url 'admin_donor_records' %}">
+                        <i class="fas fa-users me-2"></i> Donor Record
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-10 content-area">
+            <div class="header d-flex justify-content-between align-items-center p-3">
+                <h5 class="mb-0">ADMINISTRATOR</h5>
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="far fa-calendar-alt"></i>
+                    </div>
+                    <div class="me-3">
+                        <i class="far fa-envelope"></i>
+                    </div>
+                    <div class="me-3">
+                        <i class="far fa-bell"></i>
+                    </div>
+                    <div class="user-dropdown">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">{{ request.user.full_name }}</span>
+                            <img
+                            src="{% static 'img/default.jpg' %}"
+                            alt="User"
+                            class="rounded-circle"
+                            style="border-radius: 50px; height: 20px; width: auto;"/>
+                        </div>
+                        <div class="user-dropdown-content">
+                            <a href="{% url 'login' %}">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container-fluid py-4">
+                <div class="table-container">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h5>Red Blood Cell</h5>
+                            <p class="text-muted">Blood Stock</p>
+                        </div>
+                        <div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-primary me-2">Sort by</button>
+                            <button class="btn btn-outline-primary me-2">Filter</button>
+                            <button class="btn btn-primary me-2">Release Stock</button>
+                            <a href="{% url 'add_blood_stock' %}" class="btn btn-warning">+ Add Stock</a>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>SERIAL ID</th>
+                                    <th>BLOOD TYPE</th>
+                                    <th>RH FACTOR</th>
+                                    <th>VOLUME (ML)</th>
+                                    <th>DATE OF COLLECTION</th>
+                                    <th>EXPIRATION DATE</th>
+                                    <th>STATUS</th>
+                                    <th>CREATED AT</th>
+                                    <th>MODIFIED AT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stock in blood_stocks %}
+                                <tr>
+                                    <td>{{ stock.serial_id }}</td>
+                                    <td>{{ stock.blood_type }}</td>
+                                    <td>{{ stock.rh_factor }}</td>
+                                    <td>{{ stock.volume_ml }}</td>
+                                    <td>{{ stock.date_of_collection|date:"m/d/Y" }}</td>
+                                    <td>{{ stock.expiration_date|date:"m/d/Y" }}</td>
+                                    <td><span class="status-stored">{{ stock.status|title }}</span></td>
+                                    <td>{{ stock.created_at|date:"m/d/Y-h:i:s a" }}</td>
+                                    <td>{{ stock.modified_at|date:"m/d/Y-h:i:s a"|default:"-" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center">No blood stocks available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-3">
+                        <button class="btn btn-outline-secondary">Previous</button>
+                        <div>Page 1 of 20</div>
+                        <button class="btn btn-outline-secondary">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><div class="footer">2025 © Copyright Code Red Corporation ver. 1.0</div>
+{% endblock %}

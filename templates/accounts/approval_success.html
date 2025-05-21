@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Approval Successful - BloodSync{% endblock %}
+
+{% block content %}
+<style>
+    body {
+      background: url('{% static "img/Background.png" %}') no-repeat center center
+        fixed;
+      background-size: cover;
+      min-height: 150vh;
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .header {
+      background-color: #084d23;
+      padding: 5px 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      border-bottom: 4px solid #8dc63f;
+    }
+  
+    .bloodsync-text {
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+    }
+  
+    .bloodsync-yellow {
+      color: #ffcf35;
+    }
+  
+    .success-container {
+      margin-top: 100px;
+      min-height: calc(100vh - 150px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .success-content {
+      background-color: rgba(8, 77, 35, 0.85);
+      border-radius: 0;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      color: white;
+      width: 500px;
+      text-align: center;
+    }
+  
+    .footer {
+      background-color: #ffcf35;
+      padding: 10px 20px;
+      color: #333;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: left;
+      font-size: 12px;
+    }
+  
+    .success-icon {
+      font-size: 60px;
+      color: #8dc63f;
+      margin-bottom: 20px;
+    }
+  
+    .btn-login {
+      background-color: #8dc63f;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 3px;
+      font-weight: bold;
+      font-size: 16px;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+    }
+  
+    .btn-login:hover {
+      background-color: #7ab62f;
+      color: white;
+      text-decoration: none;
+    }
+  
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+  
+    .doh-header {
+      display: flex;
+      align-items: right;
+      padding: 2px 10px;
+      border-radius: 5px;
+      margin-right: 5px;
+    }
+</style>
+
+<!-- Include Font Awesome for the check icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+<!-- Header -->
+<div class="header">
+  <div class="logo-container">
+    <img
+      src="{% static 'img/Logo.png' %}"
+      alt="BloodSync Logo"
+      style="height: 50px"
+    />
+  </div>
+  <div class="doh-header">
+    <img
+      src="{% static 'img/DOH Logo.png' %}"
+      alt="DOH Logo"
+      style="height: 50px; margin-top: 5px"
+    />
+    <img
+      src="{% static 'img/Text Logo.png' %}"
+      alt="Text Logo"
+      style="height: 60px"
+    />
+  </div>
+</div>
+  
+<!-- Main Content -->
+<div class="container success-container">
+  <div class="success-content">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h2 class="mb-4">User Approved Successfully!</h2>
+    <p class="mb-3">The barangay official account for <strong>{{ user.full_name }}</strong> has been approved.</p>
+    <p class="mb-4">An email notification has been sent to the user.</p>
+    <p>The user can now log in to the BloodSync system.</p>
+    <a href="{% url 'login' %}" class="btn-login">Go to Login</a>
+  </div>
+</div>
+  
+<!-- Footer -->
+<div class="footer">2025 © Copyright Code Red Corporation ver. 1.0</div>
+
+<!-- Automatic redirect after 5 seconds -->
+<script>
+  setTimeout(function() {
+    window.location.href = "{% url 'login' %}";
+  }, 5000);
+</script>
+{% endblock %}
